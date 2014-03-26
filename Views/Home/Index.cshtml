@@ -1,0 +1,39 @@
+﻿@using ScrumwiseReporting.Controllers
+@model ScrumwiseReporting.Controllers.HomepageViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@Model.Raw
+
+@foreach (var sprint in Model.Sprints)
+{
+    <h2>@sprint.Name</h2>
+    <table>
+        <tr>
+            <th>Item Name</th>  
+            @foreach (var person in Model.Persons)
+            {
+                <th>@person.FirstName</th>
+            }  
+        </tr>
+
+        @foreach (var item in sprint.BacklogItems)
+        {
+
+            <tr>
+                <th>@item.Name</th>
+                @foreach (var person in Model.Persons)
+                {
+                    var userTasks = item.Tasks.Where(x => x.AssignedPersonIDs.Contains(person.Id));
+                    var userTotalSum = userTasks.SelectMany(x => x.TimeEntries).Sum(x => x);
+                    <td>@userTotalSum</td>
+                }    
+            </tr>
+        }
+
+    </table>
+}
+
